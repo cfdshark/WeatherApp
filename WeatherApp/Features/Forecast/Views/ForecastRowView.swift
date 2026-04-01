@@ -8,7 +8,7 @@ struct ForecastRowView: View {
             VStack(alignment: .leading, spacing: 14) {
                 //Weather card title
                 Text(ForecastPresentationFormatter.weekdayString(from: day.date))
-                    .font(.custom("Poppins-Bold", size: 16))
+                    .font(.custom("Poppins-SemiBold", size: 16))
                     .lineSpacing(8)
                     .foregroundStyle(.black.opacity(0.88))
 
@@ -21,7 +21,7 @@ struct ForecastRowView: View {
             
             //Weather temperature
             Text(ForecastPresentationFormatter.temperatureString(celsius: day.temperatureCelsius))
-                .font(.custom("Poppins-SemiBold", size: 36))
+                .font(.custom("Poppins-Bold", size: 36))
                 .lineSpacing(8)
                 .foregroundStyle(.black.opacity(0.9))
                 .frame(maxHeight: .infinity, alignment: .bottom)
@@ -29,7 +29,7 @@ struct ForecastRowView: View {
         .padding(.horizontal, 18)
         .padding(.vertical, 20)
         .frame(maxWidth: .infinity)
-        .background(.white.opacity(0.94), in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .background(.white.opacity(0.94), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .shadow(color: .black.opacity(0.08), radius: 12, y: 8)
     }
 
