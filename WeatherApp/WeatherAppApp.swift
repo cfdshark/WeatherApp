@@ -1,17 +1,18 @@
-//
-//  WeatherAppApp.swift
-//  WeatherApp
-//
-//  Created by Blessing Mabunda on 2026/04/01.
-//
-
 import SwiftUI
 
 @main
 struct WeatherAppApp: App {
+    private let container = AppContainer.live()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ForecastScreen(
+                viewModel: ForecastScreenViewModel(
+                    locationProvider: container.locationProvider,
+                    weatherProvider: container.weatherProvider,
+                    overlayTextProvider: container.overlayTextProvider
+                )
+            )
         }
     }
 }
