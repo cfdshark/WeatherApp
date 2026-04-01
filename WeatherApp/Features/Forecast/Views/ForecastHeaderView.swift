@@ -6,7 +6,9 @@ struct ForecastHeaderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("5 Day Forecast")
-                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .font(.custom("Poppins-Black", size: 18))
+                .kerning(0)
+                .lineSpacing(10)
                 .foregroundStyle(.white)
 
             VStack(alignment: .leading, spacing: 6) {
