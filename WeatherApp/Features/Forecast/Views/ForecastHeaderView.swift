@@ -6,12 +6,12 @@ struct ForecastHeaderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("5 Day Forecast")
-                .font(.title.weight(.bold))
+                .font(.system(size: 18, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(snapshot.locationName)
-                    .font(.title2.weight(.semibold))
+                    .font(.headline.weight(.semibold))
                     .foregroundStyle(.white)
 
                 Text("\(snapshot.currentTemperatureCelsius)°")
