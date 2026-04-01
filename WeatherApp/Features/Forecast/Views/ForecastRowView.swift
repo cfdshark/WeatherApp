@@ -4,10 +4,12 @@ struct ForecastRowView: View {
     let day: ForecastDay
 
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(alignment: .bottom, spacing: 16) {
             VStack(alignment: .leading, spacing: 14) {
+                //Weather card title
                 Text(ForecastPresentationFormatter.weekdayString(from: day.date))
-                    .font(.title3.weight(.semibold))
+                    .font(.custom("Poppins-Bold", size: 16))
+                    .lineSpacing(8)
                     .foregroundStyle(.black.opacity(0.88))
 
                 Image(systemName: day.condition.sfSymbolName)
@@ -16,10 +18,13 @@ struct ForecastRowView: View {
             }
 
             Spacer()
-
+            
+            //Weather temperature
             Text(ForecastPresentationFormatter.temperatureString(celsius: day.temperatureCelsius))
-                .font(.system(size: 30, weight: .bold, design: .rounded))
+                .font(.custom("Poppins-SemiBold", size: 36))
+                .lineSpacing(8)
                 .foregroundStyle(.black.opacity(0.9))
+                .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 20)
