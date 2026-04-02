@@ -8,16 +8,13 @@ final class ForecastScreenViewModel: ObservableObject {
 
     private let locationProvider: LocationProviding
     private let weatherProvider: WeatherProviding
-    private let overlayTextProvider: OverlayTextProviding
 
     init(
         locationProvider: LocationProviding,
-        weatherProvider: WeatherProviding,
-        overlayTextProvider: OverlayTextProviding
+        weatherProvider: WeatherProviding
     ) {
         self.locationProvider = locationProvider
         self.weatherProvider = weatherProvider
-        self.overlayTextProvider = overlayTextProvider
     }
 
     func loadForecast() async {
@@ -27,9 +24,7 @@ final class ForecastScreenViewModel: ObservableObject {
             let coordinate = try await locationProvider.requestCurrentLocation()
             state = .loading
 
-            var snapshot = try await weatherProvider.fetchForecast(for: coordinate)
-            snapshot = await enrichSnapshot(snapshot)
-
+            let snapshot = try await weatherProvider.fetchForecast(for: coordinate)
             state = .loaded(snapshot)
         } catch let error as LocationError {
             state = .permissionDenied(message: error.userMessage)
@@ -40,19 +35,4 @@ final class ForecastScreenViewModel: ObservableObject {
         }
     }
 
-    private func enrichSnapshot(_ snapshot: WeatherSnapshot) async -> WeatherSnapshot {
-        do {
-            let overlay = try await overlayTextProvider.fetchOverlay(for: snapshot)
-            return WeatherSnapshot(
-                locationName: snapshot.locationName,
-                coordinate: snapshot.coordinate,
-                currentTemperatureCelsius: snapshot.currentTemperatureCelsius,
-                primaryCondition: snapshot.primaryCondition,
-                forecastDays: snapshot.forecastDays,
-                overlay: overlay
-            )
-        } catch {
-            return snapshot
-        }
-    }
 }

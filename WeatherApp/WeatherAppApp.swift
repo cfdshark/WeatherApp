@@ -9,8 +9,7 @@ struct WeatherAppApp: App {
             ForecastScreen(
                 viewModel: ForecastScreenViewModel(
                     locationProvider: container.locationProvider,
-                    weatherProvider: container.weatherProvider,
-                    overlayTextProvider: container.overlayTextProvider
+                    weatherProvider: container.weatherProvider
                 )
             )
         }

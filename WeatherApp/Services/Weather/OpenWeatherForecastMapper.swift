@@ -20,8 +20,7 @@ struct OpenWeatherForecastMapper {
             coordinate: coordinate,
             currentTemperatureCelsius: currentEntry?.temperature ?? 0,
             primaryCondition: currentEntry?.condition ?? .cloudy,
-            forecastDays: forecastDays,
-            overlay: nil
+            forecastDays: forecastDays
         )
     }
 

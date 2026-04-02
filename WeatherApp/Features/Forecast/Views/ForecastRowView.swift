@@ -29,7 +29,7 @@ struct ForecastRowView: View {
         .padding(.horizontal, 18)
         .padding(.vertical, 20)
         .frame(maxWidth: .infinity)
-        .background(.white.opacity(0.94), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(.white.opacity(0.94), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .shadow(color: .black.opacity(0.08), radius: 12, y: 8)
     }
 

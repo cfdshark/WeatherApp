@@ -44,7 +44,7 @@ struct ForecastScreen: View {
         case .loading:
             ForecastLoadingView(
                 title: "Loading weather",
-                subtitle: "Fetching the latest 5 day forecast and overlay text."
+                subtitle: "Fetching the latest 5 day forecast."
             )
         case .loaded(let snapshot):
             ForecastHeaderView(snapshot: snapshot)
@@ -90,8 +90,7 @@ struct ForecastScreen: View {
     ForecastScreen(
         viewModel: ForecastScreenViewModel(
             locationProvider: PreviewLocationProvider(),
-            weatherProvider: PreviewWeatherProvider(),
-            overlayTextProvider: StubOverlayTextProvider()
+            weatherProvider: PreviewWeatherProvider()
         )
     )
 }
@@ -115,11 +114,7 @@ private struct PreviewWeatherProvider: WeatherProviding {
                 ForecastDay(date: .now.addingTimeInterval(172_800), temperatureCelsius: 27, condition: .sunny),
                 ForecastDay(date: .now.addingTimeInterval(259_200), temperatureCelsius: 28, condition: .sunny),
                 ForecastDay(date: .now.addingTimeInterval(345_600), temperatureCelsius: 30, condition: .sunny)
-            ],
-            overlay: WeatherOverlay(
-                title: "Current outlook",
-                message: "Cloud cover lingers over Johannesburg, but the week trends warmer and brighter."
-            )
+            ]
         )
     }
 }
