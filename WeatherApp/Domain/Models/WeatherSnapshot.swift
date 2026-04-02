@@ -4,6 +4,7 @@ struct WeatherSnapshot: Equatable {
     let locationName: String
     let coordinate: LocationCoordinate
     let currentTemperatureCelsius: Int
+    let currentFeelsLikeTemperatureCelsius: Int
     let primaryDescription: String
     let humidityPercentage: Int
     let windSpeedKilometersPerHour: Int

@@ -10,6 +10,8 @@ struct OpenWeatherForecastMapper {
             return MappedEntry(
                 date: Date(timeIntervalSince1970: entry.timestamp),
                 temperature: Int(entry.main.temperature.rounded()),
+                feelsLikeTemperature: Int(entry.main.feelsLikeTemperature.rounded()),
+                minTemperature: Int(entry.main.minimumTemperature.rounded()),
                 maxTemperature: Int(entry.main.maximumTemperature.rounded()),
                 description: formattedDescription(from: primaryWeather),
                 humidity: entry.main.humidity,
@@ -27,6 +29,7 @@ struct OpenWeatherForecastMapper {
             locationName: response.city.name,
             coordinate: coordinate,
             currentTemperatureCelsius: currentEntry?.temperature ?? 0,
+            currentFeelsLikeTemperatureCelsius: currentEntry?.feelsLikeTemperature ?? 0,
             primaryDescription: currentEntry?.description ?? "",
             humidityPercentage: currentEntry?.humidity ?? 0,
             windSpeedKilometersPerHour: currentEntry?.windSpeedKilometersPerHour ?? 0,
@@ -39,7 +42,8 @@ struct OpenWeatherForecastMapper {
 
     private func dailyForecasts(from entries: [MappedEntry], timezone: TimeZone) -> [ForecastDay] {
         var grouped: [DayKey: [MappedEntry]] = [:]
-        let calendar = Calendar(identifier: .gregorian)
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timezone
 
         for entry in entries {
             var components = calendar.dateComponents(in: timezone, from: entry.date)
@@ -61,12 +65,14 @@ struct OpenWeatherForecastMapper {
             .prefix(5)
             .compactMap { key, value in
                 let highestTemperature = value.map(\.maxTemperature).max() ?? 0
+                let lowestTemperature = value.map(\.minTemperature).min() ?? 0
                 let dominantCondition = value
                     .reduce(into: [WeatherConditionCategory: Int]()) { counts, entry in
                         counts[entry.condition, default: 0] += 1
                     }
                     .max { $0.value < $1.value }?
                     .key ?? .cloudy
+                let displayEntry = representativeEntry(for: value, dominantCondition: dominantCondition, calendar: calendar)
 
                 var dateComponents = DateComponents()
                 dateComponents.timeZone = timezone
@@ -80,18 +86,45 @@ struct OpenWeatherForecastMapper {
 
                 return ForecastDay(
                     date: date,
-                    temperatureCelsius: highestTemperature,
+                    temperatureCelsius: displayEntry?.temperature ?? highestTemperature,
+                    feelsLikeTemperatureCelsius: displayEntry?.feelsLikeTemperature ?? highestTemperature,
+                    minTemperatureCelsius: lowestTemperature,
+                    maxTemperatureCelsius: highestTemperature,
+                    description: displayEntry?.description ?? formattedDescription(from: nil),
+                    humidityPercentage: displayEntry?.humidity ?? 0,
+                    windSpeedKilometersPerHour: displayEntry?.windSpeedKilometersPerHour ?? 0,
+                    precipitationProbabilityPercentage: displayEntry?.precipitationProbabilityPercentage ?? 0,
                     condition: dominantCondition,
-                    icon: representativeEntry(for: value, dominantCondition: dominantCondition)?.icon ?? .cloud
+                    icon: displayEntry?.icon ?? .cloud,
+                    hourlyForecasts: value.map {
+                        ForecastHour(
+                            date: $0.date,
+                            temperatureCelsius: $0.temperature,
+                            feelsLikeTemperatureCelsius: $0.feelsLikeTemperature,
+                            humidityPercentage: $0.humidity,
+                            windSpeedKilometersPerHour: $0.windSpeedKilometersPerHour,
+                            precipitationProbabilityPercentage: $0.precipitationProbabilityPercentage,
+                            description: $0.description,
+                            condition: $0.condition,
+                            icon: $0.icon
+                        )
+                    }
                 )
             }
     }
 
     private func representativeEntry(
         for entries: [MappedEntry],
-        dominantCondition: WeatherConditionCategory
+        dominantCondition: WeatherConditionCategory,
+        calendar: Calendar
     ) -> MappedEntry? {
-        entries.first { $0.condition == dominantCondition } ?? entries.first
+        entries
+            .filter { $0.condition == dominantCondition }
+            .min {
+                let lhsDistance = abs((calendar.component(.hour, from: $0.date) * 60) - 720)
+                let rhsDistance = abs((calendar.component(.hour, from: $1.date) * 60) - 720)
+                return lhsDistance < rhsDistance
+            } ?? entries.first
     }
 
     private func formattedDescription(from weather: OpenWeatherResponse.Weather?) -> String {
@@ -103,6 +136,8 @@ struct OpenWeatherForecastMapper {
 private struct MappedEntry {
     let date: Date
     let temperature: Int
+    let feelsLikeTemperature: Int
+    let minTemperature: Int
     let maxTemperature: Int
     let description: String
     let humidity: Int

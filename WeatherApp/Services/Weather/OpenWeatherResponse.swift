@@ -22,11 +22,15 @@ struct OpenWeatherResponse: Decodable {
 
     struct Main: Decodable {
         let temperature: Double
+        let feelsLikeTemperature: Double
+        let minimumTemperature: Double
         let maximumTemperature: Double
         let humidity: Int
 
         enum CodingKeys: String, CodingKey {
             case temperature = "temp"
+            case feelsLikeTemperature = "feels_like"
+            case minimumTemperature = "temp_min"
             case maximumTemperature = "temp_max"
             case humidity
         }

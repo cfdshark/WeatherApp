@@ -1,6 +1,6 @@
 import Foundation
 
-enum WeatherIconAsset: String, Equatable {
+enum WeatherIconAsset: String, Equatable, Hashable {
     case sun = "Property 1=01.sun-light"
     case partlyCloudy = "Property 1=05.partial-cloudy-light"
     case lightRainWithSun = "Property 1=06.rainyday-light"

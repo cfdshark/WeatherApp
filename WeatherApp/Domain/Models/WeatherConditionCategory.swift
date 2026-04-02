@@ -1,6 +1,6 @@
 import Foundation
 
-enum WeatherConditionCategory: String, Equatable, CaseIterable {
+enum WeatherConditionCategory: String, Equatable, CaseIterable, Hashable {
     case sunny
     case cloudy
     case rainy

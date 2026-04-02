@@ -18,17 +18,22 @@ struct ForecastRowView: View {
 
             Spacer()
             
-            //Weather temperature
-            Text(ForecastPresentationFormatter.temperatureString(celsius: day.temperatureCelsius))
-                .font(.custom("Poppins-Bold", size: 36))
-                .lineSpacing(8)
-                .foregroundStyle(.black.opacity(0.9))
-                .frame(maxHeight: .infinity, alignment: .bottom)
+            VStack(alignment: .trailing, spacing: 6) {
+                Text(ForecastPresentationFormatter.temperatureString(celsius: day.temperatureCelsius))
+                    .font(.custom("Poppins-Bold", size: 36))
+                    .lineSpacing(8)
+                    .foregroundStyle(.black.opacity(0.9))
+
+                Text(ForecastPresentationFormatter.slashTemperatureRangeString(lowCelsius: day.minTemperatureCelsius, highCelsius: day.maxTemperatureCelsius))
+                    .font(.custom("Poppins-Medium", size: 14))
+                    .foregroundStyle(.black.opacity(0.52))
+            }
+            .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 20)
         .frame(maxWidth: .infinity)
-        .background(.white.opacity(0.94), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(Color.white, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .shadow(color: .black.opacity(0.08), radius: 12, y: 8)
     }
 

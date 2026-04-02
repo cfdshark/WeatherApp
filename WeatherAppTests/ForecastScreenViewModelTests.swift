@@ -8,6 +8,7 @@ final class ForecastScreenViewModelTests: XCTestCase {
             locationName: "Cape Town",
             coordinate: LocationCoordinate(latitude: -33.9249, longitude: 18.4241),
             currentTemperatureCelsius: 18,
+            currentFeelsLikeTemperatureCelsius: 17,
             primaryDescription: "Clouds",
             humidityPercentage: 61,
             windSpeedKilometersPerHour: 12,
@@ -15,7 +16,7 @@ final class ForecastScreenViewModelTests: XCTestCase {
             primaryCondition: .cloudy,
             primaryIcon: .cloud,
             forecastDays: [
-                ForecastDay(date: .now, temperatureCelsius: 18, condition: .cloudy, icon: .cloud)
+                makeForecastDay(date: .now, temperature: 18, low: 16, high: 20, condition: .cloudy, icon: .cloud)
             ]
         )
 
@@ -69,6 +70,7 @@ final class ForecastScreenViewModelTests: XCTestCase {
             locationName: "Durban",
             coordinate: LocationCoordinate(latitude: -29.8587, longitude: 31.0218),
             currentTemperatureCelsius: 25,
+            currentFeelsLikeTemperatureCelsius: 24,
             primaryDescription: "Clear Sky",
             humidityPercentage: 48,
             windSpeedKilometersPerHour: 16,
@@ -76,7 +78,7 @@ final class ForecastScreenViewModelTests: XCTestCase {
             primaryCondition: .sunny,
             primaryIcon: .sun,
             forecastDays: [
-                ForecastDay(date: .now, temperatureCelsius: 25, condition: .sunny, icon: .sun)
+                makeForecastDay(date: .now, temperature: 25, low: 19, high: 27, condition: .sunny, icon: .sun)
             ]
         )
 
@@ -93,5 +95,41 @@ final class ForecastScreenViewModelTests: XCTestCase {
 
         XCTAssertEqual(loadedSnapshot.primaryCondition, .sunny)
         XCTAssertEqual(loadedSnapshot.primaryIcon, .sun)
+    }
+
+    private func makeForecastDay(
+        date: Date,
+        temperature: Int,
+        low: Int,
+        high: Int,
+        condition: WeatherConditionCategory,
+        icon: WeatherIconAsset
+    ) -> ForecastDay {
+        ForecastDay(
+            date: date,
+            temperatureCelsius: temperature,
+            feelsLikeTemperatureCelsius: temperature - 1,
+            minTemperatureCelsius: low,
+            maxTemperatureCelsius: high,
+            description: condition.rawValue.capitalized,
+            humidityPercentage: 50,
+            windSpeedKilometersPerHour: 14,
+            precipitationProbabilityPercentage: 20,
+            condition: condition,
+            icon: icon,
+            hourlyForecasts: [
+                ForecastHour(
+                    date: date,
+                    temperatureCelsius: temperature,
+                    feelsLikeTemperatureCelsius: temperature - 1,
+                    humidityPercentage: 50,
+                    windSpeedKilometersPerHour: 14,
+                    precipitationProbabilityPercentage: 20,
+                    description: condition.rawValue.capitalized,
+                    condition: condition,
+                    icon: icon
+                )
+            ]
+        )
     }
 }

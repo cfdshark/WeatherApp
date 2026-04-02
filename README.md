@@ -24,10 +24,15 @@ WeatherApp/
   Services/Weather/
   Shared/
 WeatherAppTests/
+AppStore Screenshots/
 docs/
 ```
 
 See [docs/Architecture.md](/Users/blessingmabunda/Documents/WeatherApp/docs/Architecture.md) for the detailed architecture breakdown.
+
+## App Store Screenshots
+
+App Store screenshots were generated with [appscreenshot.xyz](https://appscreenshot.xyz/) and are saved in the [AppStore Screenshots](/Users/blessingmabunda/Documents/WeatherApp/AppStore%20Screenshots) folder.
 
 ## Third-Party Dependencies
 
