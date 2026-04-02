@@ -108,12 +108,13 @@ private struct PreviewWeatherProvider: WeatherProviding {
             coordinate: coordinate,
             currentTemperatureCelsius: 23,
             primaryCondition: .cloudy,
+            primaryIcon: .cloud,
             forecastDays: [
-                ForecastDay(date: .now, temperatureCelsius: 20, condition: .sunny),
-                ForecastDay(date: .now.addingTimeInterval(86_400), temperatureCelsius: 23, condition: .sunny),
-                ForecastDay(date: .now.addingTimeInterval(172_800), temperatureCelsius: 27, condition: .sunny),
-                ForecastDay(date: .now.addingTimeInterval(259_200), temperatureCelsius: 28, condition: .sunny),
-                ForecastDay(date: .now.addingTimeInterval(345_600), temperatureCelsius: 30, condition: .sunny)
+                ForecastDay(date: .now, temperatureCelsius: 20, condition: .sunny, icon: .sun),
+                ForecastDay(date: .now.addingTimeInterval(86_400), temperatureCelsius: 23, condition: .sunny, icon: .sun),
+                ForecastDay(date: .now.addingTimeInterval(172_800), temperatureCelsius: 27, condition: .sunny, icon: .sun),
+                ForecastDay(date: .now.addingTimeInterval(259_200), temperatureCelsius: 28, condition: .sunny, icon: .sun),
+                ForecastDay(date: .now.addingTimeInterval(345_600), temperatureCelsius: 30, condition: .sunny, icon: .sun)
             ]
         )
     }

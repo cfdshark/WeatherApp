@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct ForecastHeaderView: View {
     let snapshot: WeatherSnapshot
@@ -16,11 +17,29 @@ struct ForecastHeaderView: View {
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(.white)
 
-                Text("\(snapshot.currentTemperatureCelsius)°")
-                    .font(.system(size: 52, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
+                HStack(alignment: .center, spacing: 16) {
+                    headerIcon
+
+                    Text("\(snapshot.currentTemperatureCelsius)°")
+                        .font(.system(size: 52, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var headerIcon: some View {
+        if UIImage(named: snapshot.primaryIcon.assetName) != nil {
+            Image(snapshot.primaryIcon.assetName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 54, height: 54)
+        } else {
+            Image(systemName: snapshot.primaryIcon.fallbackSFSymbolName)
+                .font(.system(size: 42))
+                .foregroundStyle(.white)
+        }
     }
 }

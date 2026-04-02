@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct ForecastRowView: View {
     let day: ForecastDay
@@ -12,9 +13,7 @@ struct ForecastRowView: View {
                     .lineSpacing(8)
                     .foregroundStyle(.black.opacity(0.88))
 
-                Image(systemName: day.condition.sfSymbolName)
-                    .font(.system(size: 28))
-                    .foregroundStyle(iconColor)
+                weatherIcon
             }
 
             Spacer()
@@ -31,6 +30,20 @@ struct ForecastRowView: View {
         .frame(maxWidth: .infinity)
         .background(.white.opacity(0.94), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .shadow(color: .black.opacity(0.08), radius: 12, y: 8)
+    }
+
+    @ViewBuilder
+    private var weatherIcon: some View {
+        if UIImage(named: day.icon.assetName) != nil {
+            Image(day.icon.assetName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 36, height: 36)
+        } else {
+            Image(systemName: day.icon.fallbackSFSymbolName)
+                .font(.system(size: 28))
+                .foregroundStyle(iconColor)
+        }
     }
 
     private var iconColor: Color {

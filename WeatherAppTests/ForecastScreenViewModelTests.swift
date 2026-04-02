@@ -9,8 +9,9 @@ final class ForecastScreenViewModelTests: XCTestCase {
             coordinate: LocationCoordinate(latitude: -33.9249, longitude: 18.4241),
             currentTemperatureCelsius: 18,
             primaryCondition: .cloudy,
+            primaryIcon: .cloud,
             forecastDays: [
-                ForecastDay(date: .now, temperatureCelsius: 18, condition: .cloudy)
+                ForecastDay(date: .now, temperatureCelsius: 18, condition: .cloudy, icon: .cloud)
             ]
         )
 
@@ -65,8 +66,9 @@ final class ForecastScreenViewModelTests: XCTestCase {
             coordinate: LocationCoordinate(latitude: -29.8587, longitude: 31.0218),
             currentTemperatureCelsius: 25,
             primaryCondition: .sunny,
+            primaryIcon: .sun,
             forecastDays: [
-                ForecastDay(date: .now, temperatureCelsius: 25, condition: .sunny)
+                ForecastDay(date: .now, temperatureCelsius: 25, condition: .sunny, icon: .sun)
             ]
         )
 
@@ -82,5 +84,6 @@ final class ForecastScreenViewModelTests: XCTestCase {
         }
 
         XCTAssertEqual(loadedSnapshot.primaryCondition, .sunny)
+        XCTAssertEqual(loadedSnapshot.primaryIcon, .sun)
     }
 }

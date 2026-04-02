@@ -1,14 +1,18 @@
 import Foundation
 
 struct OpenWeatherForecastMapper {
+    private let iconMapper = OpenWeatherConditionIconMapper()
+
     func map(response: OpenWeatherResponse, coordinate: LocationCoordinate) -> WeatherSnapshot {
         let timezone = TimeZone(secondsFromGMT: response.city.timezone) ?? .current
         let entries = response.list.map { entry in
-            MappedEntry(
+            let primaryWeather = entry.weather.first
+            return MappedEntry(
                 date: Date(timeIntervalSince1970: entry.timestamp),
                 temperature: Int(entry.main.temperature.rounded()),
                 maxTemperature: Int(entry.main.maximumTemperature.rounded()),
-                condition: WeatherConditionCategory(openWeatherCondition: entry.weather.first?.main ?? "")
+                condition: WeatherConditionCategory(openWeatherCondition: primaryWeather?.main ?? ""),
+                icon: iconMapper.icon(for: primaryWeather)
             )
         }
 
@@ -20,6 +24,7 @@ struct OpenWeatherForecastMapper {
             coordinate: coordinate,
             currentTemperatureCelsius: currentEntry?.temperature ?? 0,
             primaryCondition: currentEntry?.condition ?? .cloudy,
+            primaryIcon: currentEntry?.icon ?? .cloud,
             forecastDays: forecastDays
         )
     }
@@ -68,9 +73,17 @@ struct OpenWeatherForecastMapper {
                 return ForecastDay(
                     date: date,
                     temperatureCelsius: highestTemperature,
-                    condition: dominantCondition
+                    condition: dominantCondition,
+                    icon: representativeEntry(for: value, dominantCondition: dominantCondition)?.icon ?? .cloud
                 )
             }
+    }
+
+    private func representativeEntry(
+        for entries: [MappedEntry],
+        dominantCondition: WeatherConditionCategory
+    ) -> MappedEntry? {
+        entries.first { $0.condition == dominantCondition } ?? entries.first
     }
 }
 
@@ -79,6 +92,7 @@ private struct MappedEntry {
     let temperature: Int
     let maxTemperature: Int
     let condition: WeatherConditionCategory
+    let icon: WeatherIconAsset
 }
 
 private struct DayKey: Comparable, Hashable {

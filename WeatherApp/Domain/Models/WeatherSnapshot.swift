@@ -5,5 +5,6 @@ struct WeatherSnapshot: Equatable {
     let coordinate: LocationCoordinate
     let currentTemperatureCelsius: Int
     let primaryCondition: WeatherConditionCategory
+    let primaryIcon: WeatherIconAsset
     let forecastDays: [ForecastDay]
 }

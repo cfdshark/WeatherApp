@@ -36,6 +36,100 @@ No third-party dependencies are currently used.
 - OpenWeather is used as an external HTTP API, not as a bundled SDK.
 - If cross-cutting tooling is added later, it must stay limited to concerns such as linting, logging, or CI support.
 
+## Weather Presentation Mapping
+
+The app now uses a two-layer weather presentation model:
+
+- **Background images** stay intentionally coarse and unchanged.
+- **Weather icons** are now specific and are mapped from OpenWeather condition data into the provided bundled asset set.
+
+This distinction is important:
+
+- The background is meant to communicate the overall feel of the current weather using only three states:
+  - `sunny`
+  - `cloudy`
+  - `rainy`
+- The iconography is meant to communicate the more specific weather condition returned by OpenWeather, such as:
+  - clear sky
+  - light rain
+  - heavy rain
+  - thunderstorm
+  - snow
+  - fog
+  - wind-driven conditions
+
+### Background Image Logic
+
+Background selection has **not** changed.
+
+The app still maps OpenWeather's broad `weather.main` field into the existing app-owned category enum:
+
+- `Clear` -> `sunny`
+- `Clouds`, `Mist`, `Smoke`, `Haze`, `Dust`, `Fog`, `Sand`, `Ash`, `Squall`, `Tornado` -> `cloudy`
+- `Drizzle`, `Rain`, `Thunderstorm`, `Snow` -> `rainy`
+- anything unknown defaults to `cloudy`
+
+That category is then used by `WeatherTheme` to select one of the three existing background assets:
+
+- `sunny` -> `Sunny`
+- `cloudy` -> `Cloudy`
+- `rainy` -> `Rainy`
+
+The background is therefore still driven by the app's primary condition and remains intentionally simple. It does **not** switch to a unique background per fine-grained OpenWeather condition code.
+
+### Bundled Weather Icon Logic
+
+In addition to the coarse background category, the app now keeps the primary OpenWeather condition payload for icon resolution:
+
+- `weather.id`
+- `weather.main`
+- `weather.description`
+
+The icon pipeline uses `weather.id` as the primary lookup key because it is the most stable field for condition matching. That ID is mapped to the provided bundled weather icon assets instead of relying only on SF Symbols.
+
+The bundled icon set is treated as the app's primary weather icon library. OpenWeather conditions are mapped into the closest available asset in that set. For example:
+
+- clear sky maps to the bundled sun icon
+- few clouds maps to the bundled partly cloudy icon
+- heavier cloud coverage maps to bundled cloud-based icons
+- drizzle maps to the bundled drizzle icon
+- light rain maps to the bundled light-rain icon
+- heavy rain maps to the bundled heavy-rain icon
+- thunder and thunderstorm conditions map to bundled storm icons
+- snow and heavy snow map to bundled snow assets
+- sleet and freezing-rain style conditions map to the bundled hailstorm asset
+- fog and haze map to a bundled cloud asset
+- strong wind, dust, sand, squall, and tornado families map to the bundled heavy-wind asset
+
+Some provided assets are intentionally **not** used for weather-condition matching in the current app because they represent celestial or time-of-day imagery rather than weather conditions themselves. That includes icons such as:
+
+- sunrise
+- sunset
+- eclipse
+- moon variants
+
+Those assets are excluded from the OpenWeather condition mapping because this app is focused on weather-state presentation, not astronomy-state presentation.
+
+### Fallback Behavior
+
+The icon mapping system follows a fallback chain so the UI remains resilient if OpenWeather returns an unmapped or unexpected condition:
+
+1. map from `weather.id`
+2. if needed, fall back to `weather.main` / `weather.description` heuristics
+3. if still unresolved, fall back to the bundled cloud icon as the default asset
+4. if the expected bundled asset cannot be loaded, fall back to an SF Symbol
+
+This means the app now prefers the provided weather icons at runtime, while still keeping a safe fallback path so the UI can render even if an icon is missing or a new OpenWeather condition appears.
+
+### Architectural Intent
+
+The project now separates:
+
+- **weather category for backgrounds**
+- **weather icon asset for condition display**
+
+This keeps the background logic stable and easy to reason about, while allowing the forecast rows and current-condition UI to become much more specific without changing the rest of the app's visual architecture.
+
 ## Configuration
 
 The current testing configuration is defined in [AppConfiguration.swift](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/App/AppConfiguration.swift).
@@ -62,6 +156,7 @@ xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'p
 
 - Unit tests cover:
   - OpenWeather response mapping into app-owned models
+  - OpenWeather condition-to-icon mapping for bundled weather assets
   - theme/background mapping
   - forecast view-model state transitions
   - presentation formatting helpers
