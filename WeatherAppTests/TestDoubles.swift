@@ -17,14 +17,6 @@ struct MockWeatherProvider: WeatherProviding {
     }
 }
 
-struct MockOverlayProvider: OverlayTextProviding {
-    var result: Result<WeatherOverlay, Error>
-
-    func fetchOverlay(for snapshot: WeatherSnapshot) async throws -> WeatherOverlay {
-        try result.get()
-    }
-}
-
 struct MockHTTPClient: HTTPClient {
     var result: Result<(Data, URLResponse), Error>
 

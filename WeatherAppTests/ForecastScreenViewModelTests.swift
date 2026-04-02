@@ -11,16 +11,12 @@ final class ForecastScreenViewModelTests: XCTestCase {
             primaryCondition: .cloudy,
             forecastDays: [
                 ForecastDay(date: .now, temperatureCelsius: 18, condition: .cloudy)
-            ],
-            overlay: nil
+            ]
         )
 
         let viewModel = ForecastScreenViewModel(
             locationProvider: MockLocationProvider(result: .success(snapshot.coordinate)),
-            weatherProvider: MockWeatherProvider(result: .success(snapshot)),
-            overlayTextProvider: MockOverlayProvider(
-                result: .success(WeatherOverlay(title: "Today", message: "Cloud cover remains light."))
-            )
+            weatherProvider: MockWeatherProvider(result: .success(snapshot))
         )
 
         await viewModel.loadForecast()
@@ -29,15 +25,14 @@ final class ForecastScreenViewModelTests: XCTestCase {
             return XCTFail("Expected loaded state")
         }
 
-        XCTAssertEqual(loadedSnapshot.overlay?.title, "Today")
+        XCTAssertEqual(loadedSnapshot.locationName, "Cape Town")
         XCTAssertEqual(loadedSnapshot.forecastDays.count, 1)
     }
 
     func testLoadForecastPublishesPermissionDeniedState() async {
         let viewModel = ForecastScreenViewModel(
             locationProvider: MockLocationProvider(result: .failure(LocationError.permissionDenied)),
-            weatherProvider: MockWeatherProvider(result: .failure(WeatherServiceError.invalidURL)),
-            overlayTextProvider: MockOverlayProvider(result: .failure(NetworkError.invalidResponse))
+            weatherProvider: MockWeatherProvider(result: .failure(WeatherServiceError.invalidURL))
         )
 
         await viewModel.loadForecast()
@@ -52,8 +47,7 @@ final class ForecastScreenViewModelTests: XCTestCase {
     func testLoadForecastPublishesErrorStateForWeatherFailure() async {
         let viewModel = ForecastScreenViewModel(
             locationProvider: MockLocationProvider(result: .success(LocationCoordinate(latitude: 1, longitude: 1))),
-            weatherProvider: MockWeatherProvider(result: .failure(WeatherServiceError.missingAPIKey)),
-            overlayTextProvider: MockOverlayProvider(result: .failure(NetworkError.invalidResponse))
+            weatherProvider: MockWeatherProvider(result: .failure(WeatherServiceError.missingAPIKey))
         )
 
         await viewModel.loadForecast()
@@ -65,7 +59,7 @@ final class ForecastScreenViewModelTests: XCTestCase {
         XCTAssertTrue(message.contains("OpenWeather API key"))
     }
 
-    func testLoadForecastStillLoadsWhenOverlayRequestFails() async {
+    func testLoadForecastPublishesLoadedStateForWeatherSuccess() async {
         let snapshot = WeatherSnapshot(
             locationName: "Durban",
             coordinate: LocationCoordinate(latitude: -29.8587, longitude: 31.0218),
@@ -73,14 +67,12 @@ final class ForecastScreenViewModelTests: XCTestCase {
             primaryCondition: .sunny,
             forecastDays: [
                 ForecastDay(date: .now, temperatureCelsius: 25, condition: .sunny)
-            ],
-            overlay: nil
+            ]
         )
 
         let viewModel = ForecastScreenViewModel(
             locationProvider: MockLocationProvider(result: .success(snapshot.coordinate)),
-            weatherProvider: MockWeatherProvider(result: .success(snapshot)),
-            overlayTextProvider: MockOverlayProvider(result: .failure(NetworkError.invalidResponse))
+            weatherProvider: MockWeatherProvider(result: .success(snapshot))
         )
 
         await viewModel.loadForecast()
@@ -89,6 +81,6 @@ final class ForecastScreenViewModelTests: XCTestCase {
             return XCTFail("Expected loaded state")
         }
 
-        XCTAssertNil(loadedSnapshot.overlay)
+        XCTAssertEqual(loadedSnapshot.primaryCondition, .sunny)
     }
 }
