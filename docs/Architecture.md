@@ -6,7 +6,7 @@ WeatherApp uses **MVVM** with feature-oriented folders. The goal is to keep each
 
 - Views render only display state.
 - The feature view model coordinates loading and state transitions.
-- Services isolate location, networking, weather retrieval, and overlay-text retrieval.
+- Services isolate location, networking, and weather retrieval.
 - Domain models define the app's own data shape so SwiftUI does not depend on raw API DTOs.
 
 ## Folder Responsibilities
@@ -21,7 +21,6 @@ WeatherApp uses **MVVM** with feature-oriented folders. The goal is to keep each
 - `LocationCoordinate`
 - `ForecastDay`
 - `WeatherConditionCategory`
-- `WeatherOverlay`
 - `WeatherSnapshot`
 - `ForecastScreenState`
 
@@ -32,7 +31,6 @@ These types are app-owned and stable across service changes.
 - `ForecastScreenViewModel` owns the async user flow:
   - request location permission
   - fetch forecast
-  - fetch overlay text
   - publish `idle`, `requestingPermission`, `loading`, `loaded`, `permissionDenied`, or `error`
 
 ### `Features/Forecast/Views/`
@@ -54,7 +52,6 @@ This keeps layout, styling, and state-driven branching out of a single oversized
 - `Location/`: Core Location wrapper behind `LocationProviding`
 - `Networking/`: HTTP abstraction and URLSession implementation
 - `Weather/`: OpenWeather integration, DTOs, mapping, and protocol
-- `OverlayText/`: remote overlay-text provider plus a development stub
 
 ### `Shared/`
 
@@ -66,7 +63,7 @@ This keeps layout, styling, and state-driven branching out of a single oversized
 - SwiftUI views may depend on the feature view model and shared presentation helpers.
 - View models may depend only on protocols and domain models, not concrete networking or Core Location types.
 - Services may depend on networking helpers and DTOs, then map into domain models before returning.
-- DTOs stay internal to the weather/overlay service layer.
+- DTOs stay internal to the weather service layer.
 - Shared helpers must remain stateless and reusable.
 
 ## Data Flow
@@ -76,9 +73,8 @@ This keeps layout, styling, and state-driven branching out of a single oversized
 3. `ForecastScreenViewModel` requests the current location through `LocationProviding`.
 4. `WeatherProviding` fetches OpenWeather's 5-day forecast using `URLSession`.
 5. `OpenWeatherForecastMapper` converts the API payload into `WeatherSnapshot` and `ForecastDay` values.
-6. `OverlayTextProviding` requests overlay copy from a remote endpoint. If no endpoint is configured, the app uses a development stub.
-7. The view model publishes the final `ForecastScreenState.loaded` state.
-8. SwiftUI views render the weather background, header, overlay text, and forecast list from display-ready domain data.
+6. The view model publishes the final `ForecastScreenState.loaded` state.
+7. SwiftUI views render the weather background, header, and forecast list from display-ready domain data.
 
 ## Why This Avoids A Monolith
 
@@ -95,5 +91,4 @@ This structure leaves clear room for future work without rewriting the screen:
 
 - add hourly forecast or detail screens under `Features/`
 - add caching or offline storage behind `WeatherProviding`
-- replace the development overlay stub with a production overlay service
 - add new presentation themes without touching service code

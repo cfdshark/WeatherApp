@@ -1,6 +1,6 @@
 # WeatherApp
 
-WeatherApp is a SwiftUI weather client that fetches a 5-day forecast from OpenWeather using the user's current location, then displays a weather-aware background with overlay copy. The codebase is intentionally split into small views and focused services instead of a single monolithic screen.
+WeatherApp is a SwiftUI weather client that fetches a 5-day forecast from OpenWeather using the user's current location, then displays a weather-aware background and forecast UI. The codebase is intentionally split into small views and focused services instead of a single monolithic screen.
 
 ## Conventions And Architecture
 
@@ -21,7 +21,6 @@ WeatherApp/
   Features/Forecast/Views/
   Services/Location/
   Services/Networking/
-  Services/OverlayText/
   Services/Weather/
   Shared/
 WeatherAppTests/
@@ -42,9 +41,8 @@ No third-party dependencies are currently used.
 The current testing configuration is defined in [AppConfiguration.swift](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/App/AppConfiguration.swift).
 
 - `openWeatherAPIKey`
-- `overlayTextAPIURL`
 
-The OpenWeather key is currently stored on the client for testing, and the overlay endpoint is left unset so the app uses the development stub overlay provider.
+The OpenWeather key is currently stored on the client for testing.
 
 ## Build And Run
 
@@ -67,17 +65,35 @@ xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'p
   - theme/background mapping
   - forecast view-model state transitions
   - presentation formatting helpers
-- Protocol-based test doubles isolate location, network, weather, and overlay flows.
+- Protocol-based test doubles isolate location, network, and weather flows.
 - UI verification is handled through SwiftUI previews plus view-model coverage rather than snapshot tooling.
 
 ## CI/CD And Coverage
 
-- GitHub Actions is configured in [ios.yml](/Users/blessingmabunda/Documents/WeatherApp/.github/workflows/ios.yml).
-- The workflow runs:
-  - `xcodebuild test`
-  - `xcodebuild analyze`
-  - `xccov` coverage export
-- Coverage is emitted as an artifact so it can be inspected from CI runs.
+GitHub Actions is configured in [ios.yml](/Users/blessingmabunda/Documents/WeatherApp/.github/workflows/ios.yml). The pipeline is currently a CI workflow rather than a full deployment workflow, so its job is to validate the app on every change to `main` and on pull requests.
+
+The workflow currently runs a single job named `test-and-analyze` on `macos-latest`. That job:
+
+- checks out the repository with `actions/checkout`
+- selects the latest stable Xcode with `maxim-lobanov/setup-xcode`
+- runs `xcodebuild test` against the `WeatherApp` scheme on the `iPhone 16` simulator
+- enables code coverage during test execution
+- writes the test result bundle to `TestResults.xcresult`
+- runs `xcodebuild analyze` for static analysis after tests
+- exports a human-readable coverage report with `xcrun xccov view --report`
+- uploads the generated `coverage.txt` file as a GitHub Actions artifact named `weatherapp-coverage`
+
+In practical terms, CI is enforcing three things on every push and pull request:
+
+- the app target and test target must compile successfully
+- the unit tests must pass on the configured simulator destination
+- Xcode static analysis must complete without failing the workflow
+
+The artifact handling is intentionally simple. Coverage is not yet posted as a PR comment, uploaded to a third-party dashboard, or used as a merge gate. Instead, the workflow keeps the `coverage.txt` file as a downloadable build artifact for manual inspection from the Actions run page.
+
+There is no CD step yet. The repository does not currently build release archives, sign the app, upload to TestFlight, deploy metadata, or publish artifacts beyond the test coverage report. If release automation is added later, it should be kept separate from the validation job so CI failures and release failures remain easy to distinguish.
+
+If GitHub Actions shows JavaScript runtime warnings such as Node 20 deprecation notices, those warnings are about the GitHub-hosted action runtime used by actions like `actions/checkout`, not about the Swift app itself. They should be handled by updating workflow action versions when newer compatible releases are available.
 
 ## Static Analysis
 
