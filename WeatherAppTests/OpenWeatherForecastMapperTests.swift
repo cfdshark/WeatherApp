@@ -21,6 +21,10 @@ final class OpenWeatherForecastMapperTests: XCTestCase {
         )
 
         XCTAssertEqual(snapshot.locationName, "Pretoria")
+        XCTAssertEqual(snapshot.primaryDescription, "Clouds")
+        XCTAssertEqual(snapshot.humidityPercentage, 56)
+        XCTAssertEqual(snapshot.windSpeedKilometersPerHour, 14)
+        XCTAssertEqual(snapshot.precipitationProbabilityPercentage, 20)
         XCTAssertEqual(snapshot.primaryCondition, .cloudy)
         XCTAssertEqual(snapshot.primaryIcon, .cloud)
         XCTAssertEqual(snapshot.forecastDays.count, 5)
@@ -32,8 +36,10 @@ final class OpenWeatherForecastMapperTests: XCTestCase {
     private func makeEntry(timestamp: TimeInterval, temp: Double, max: Double, code: Int, main: String) -> OpenWeatherResponse.ForecastEntry {
         OpenWeatherResponse.ForecastEntry(
             timestamp: timestamp,
-            main: .init(temperature: temp, maximumTemperature: max),
-            weather: [.init(id: code, main: main, description: main)]
+            main: .init(temperature: temp, maximumTemperature: max, humidity: 56),
+            weather: [.init(id: code, main: main, description: main)],
+            wind: .init(speed: 4),
+            precipitationProbability: 0.2
         )
     }
 }

@@ -107,6 +107,10 @@ private struct PreviewWeatherProvider: WeatherProviding {
             locationName: "Johannesburg",
             coordinate: coordinate,
             currentTemperatureCelsius: 23,
+            primaryDescription: "Broken Clouds",
+            humidityPercentage: 62,
+            windSpeedKilometersPerHour: 18,
+            precipitationProbabilityPercentage: 35,
             primaryCondition: .cloudy,
             primaryIcon: .cloud,
             forecastDays: [

@@ -173,6 +173,56 @@ In that model:
 
 The current implementation does not include that settings page or persistence layer yet. It is a presentation-only improvement that makes the displayed unit match the phone setting without introducing additional app configuration UI.
 
+## Current Weather Metrics
+
+The forecast header now shows a compact current-conditions summary in addition to the icon and temperature. The added values are:
+
+- wind speed in `km/h`
+- humidity as a percentage
+- precipitation as a percentage
+
+These values are derived from the first forecast entry returned by OpenWeather, which is the same entry the app already uses as the source of truth for the current primary condition and current displayed temperature.
+
+### OpenWeather Fields Used
+
+The app now reads the following additional fields from the OpenWeather 5-day / 3-hour forecast response:
+
+- `main.humidity`
+- `wind.speed`
+- `pop`
+
+How they are presented in the UI:
+
+- `main.humidity` -> displayed directly as `Humidity`
+- `wind.speed` -> converted from meters per second into kilometers per hour and displayed as `Wind`
+- `pop` -> converted into a percentage and displayed as `Precip`
+
+### Important Note About Precipitation
+
+The precipitation value currently shown in the app is **not** rainfall volume.
+
+It is OpenWeather's `pop` field, which represents the **probability of precipitation** for that forecast entry. In practical terms:
+
+- `20%` means a 20% chance of precipitation
+- it does **not** mean 20 mm of rain
+
+If the app later needs actual precipitation amount, that would require additional handling for fields such as:
+
+- `rain.3h`
+- `snow.3h`
+
+Those are separate from precipitation probability and should be treated as different weather metrics in the UI.
+
+### Current Limitation
+
+The current metrics row is intentionally lightweight:
+
+- it uses only the first/current forecast entry
+- it does not yet expose gusts, visibility, pressure, or actual rain/snow volume
+- precipitation is currently shown as chance-of-precipitation only
+
+This is a good lightweight summary for the current header, but a production-grade weather app would likely expand this into a dedicated details surface or conditions panel.
+
 ## Configuration
 
 The current testing configuration is defined in [AppConfiguration.swift](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/App/AppConfiguration.swift).
@@ -200,6 +250,7 @@ xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'p
 - Unit tests cover:
   - OpenWeather response mapping into app-owned models
   - OpenWeather condition-to-icon mapping for bundled weather assets
+  - current weather metric mapping for humidity, wind speed, and precipitation probability
   - theme/background mapping
   - forecast view-model state transitions
   - presentation formatting helpers, including Celsius/Fahrenheit display conversion

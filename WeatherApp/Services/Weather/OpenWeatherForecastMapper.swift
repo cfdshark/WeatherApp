@@ -11,6 +11,10 @@ struct OpenWeatherForecastMapper {
                 date: Date(timeIntervalSince1970: entry.timestamp),
                 temperature: Int(entry.main.temperature.rounded()),
                 maxTemperature: Int(entry.main.maximumTemperature.rounded()),
+                description: formattedDescription(from: primaryWeather),
+                humidity: entry.main.humidity,
+                windSpeedKilometersPerHour: Int(((entry.wind?.speed ?? 0) * 3.6).rounded()),
+                precipitationProbabilityPercentage: Int(((entry.precipitationProbability ?? 0) * 100).rounded()),
                 condition: WeatherConditionCategory(openWeatherCondition: primaryWeather?.main ?? ""),
                 icon: iconMapper.icon(for: primaryWeather)
             )
@@ -23,6 +27,10 @@ struct OpenWeatherForecastMapper {
             locationName: response.city.name,
             coordinate: coordinate,
             currentTemperatureCelsius: currentEntry?.temperature ?? 0,
+            primaryDescription: currentEntry?.description ?? "",
+            humidityPercentage: currentEntry?.humidity ?? 0,
+            windSpeedKilometersPerHour: currentEntry?.windSpeedKilometersPerHour ?? 0,
+            precipitationProbabilityPercentage: currentEntry?.precipitationProbabilityPercentage ?? 0,
             primaryCondition: currentEntry?.condition ?? .cloudy,
             primaryIcon: currentEntry?.icon ?? .cloud,
             forecastDays: forecastDays
@@ -85,12 +93,21 @@ struct OpenWeatherForecastMapper {
     ) -> MappedEntry? {
         entries.first { $0.condition == dominantCondition } ?? entries.first
     }
+
+    private func formattedDescription(from weather: OpenWeatherResponse.Weather?) -> String {
+        let source = (weather?.description.isEmpty == false ? weather?.description : weather?.main) ?? ""
+        return source.localizedCapitalized
+    }
 }
 
 private struct MappedEntry {
     let date: Date
     let temperature: Int
     let maxTemperature: Int
+    let description: String
+    let humidity: Int
+    let windSpeedKilometersPerHour: Int
+    let precipitationProbabilityPercentage: Int
     let condition: WeatherConditionCategory
     let icon: WeatherIconAsset
 }

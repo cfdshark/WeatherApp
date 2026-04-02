@@ -8,21 +8,27 @@ struct OpenWeatherResponse: Decodable {
         let timestamp: TimeInterval
         let main: Main
         let weather: [Weather]
+        let wind: Wind?
+        let precipitationProbability: Double?
 
         enum CodingKeys: String, CodingKey {
             case timestamp = "dt"
             case main
             case weather
+            case wind
+            case precipitationProbability = "pop"
         }
     }
 
     struct Main: Decodable {
         let temperature: Double
         let maximumTemperature: Double
+        let humidity: Int
 
         enum CodingKeys: String, CodingKey {
             case temperature = "temp"
             case maximumTemperature = "temp_max"
+            case humidity
         }
     }
 
@@ -30,6 +36,10 @@ struct OpenWeatherResponse: Decodable {
         let id: Int
         let main: String
         let description: String
+    }
+
+    struct Wind: Decodable {
+        let speed: Double
     }
 
     struct City: Decodable {

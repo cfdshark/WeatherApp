@@ -8,6 +8,10 @@ final class ForecastScreenViewModelTests: XCTestCase {
             locationName: "Cape Town",
             coordinate: LocationCoordinate(latitude: -33.9249, longitude: 18.4241),
             currentTemperatureCelsius: 18,
+            primaryDescription: "Clouds",
+            humidityPercentage: 61,
+            windSpeedKilometersPerHour: 12,
+            precipitationProbabilityPercentage: 30,
             primaryCondition: .cloudy,
             primaryIcon: .cloud,
             forecastDays: [
@@ -65,6 +69,10 @@ final class ForecastScreenViewModelTests: XCTestCase {
             locationName: "Durban",
             coordinate: LocationCoordinate(latitude: -29.8587, longitude: 31.0218),
             currentTemperatureCelsius: 25,
+            primaryDescription: "Clear Sky",
+            humidityPercentage: 48,
+            windSpeedKilometersPerHour: 16,
+            precipitationProbabilityPercentage: 10,
             primaryCondition: .sunny,
             primaryIcon: .sun,
             forecastDays: [
