@@ -313,7 +313,7 @@ That means:
 
 ## Known Limitations
 
-- the app currently uses OpenWeather's 5-day / 3-hour forecast endpoint, so it does not provide a true 14-day forecast
+- the app currently uses OpenWeather's 5-day / 3-hour forecast endpoint, so it does not provide a true 14-day forecast like most Weather Apps do
 - the API key is still client-side for testing and should be protected behind a server in production
 - the app currently depends on location access and does not yet provide a manual city search fallback
 - the daily forecast list uses one representative icon per day rather than showing multiple conditions in the same row
