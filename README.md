@@ -11,6 +11,8 @@ WeatherApp is a SwiftUI weather client that fetches a 5-day forecast from OpenWe
 - Dependency direction: Views depend on view models, view models depend on protocols, services depend on infrastructure helpers, and domain models stay framework-light.
 - Scope: one application target and one unit-test target.
 
+For the full architecture write-up, see [Architecture.md](/Users/blessingmabunda/Documents/WeatherApp/docs/Architecture.md).
+
 ## Project Structure
 
 ```text
@@ -28,7 +30,7 @@ AppStore Screenshots/
 docs/
 ```
 
-See [docs/Architecture.md](/Users/blessingmabunda/Documents/WeatherApp/docs/Architecture.md) for the detailed architecture breakdown.
+See [Architecture.md](/Users/blessingmabunda/Documents/WeatherApp/docs/Architecture.md) for the detailed architecture breakdown.
 
 ## App Store Screenshots
 
@@ -36,7 +38,7 @@ App Store screenshots were generated with [appscreenshot.xyz](https://appscreens
 
 ## App Demo Video
 
-The project also includes an app demo video saved in the [AppDemoVid](/Users/blessingmabunda/Documents/WeatherApp/AppDemoVid) folder.
+The app demo video can be downloaded from the [AppDemoVid](/Users/blessingmabunda/Documents/WeatherApp/AppDemoVid) folder for viewing.
 
 ## Third-Party Dependencies
 
