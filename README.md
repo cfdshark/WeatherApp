@@ -34,6 +34,10 @@ See [docs/Architecture.md](/Users/blessingmabunda/Documents/WeatherApp/docs/Arch
 
 App Store screenshots were generated with [appscreenshot.xyz](https://appscreenshot.xyz/) and are saved in the [AppStore Screenshots](/Users/blessingmabunda/Documents/WeatherApp/AppStore%20Screenshots) folder.
 
+## App Demo Video
+
+The project also includes an app demo video saved in the [AppDemoVid](/Users/blessingmabunda/Documents/WeatherApp/AppDemoVid) folder.
+
 ## Third-Party Dependencies
 
 No third-party dependencies are currently used.
