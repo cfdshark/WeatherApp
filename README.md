@@ -40,12 +40,32 @@ App Store screenshots were generated with [appscreenshot.xyz](https://appscreens
 
 The app demo video can be downloaded from the [AppDemoVid](/Users/blessingmabunda/Documents/WeatherApp/AppDemoVid) folder for viewing.
 
+## Environment Requirements
+
+The current setup assumes:
+
+- Xcode with iOS Simulator support installed
+- the `WeatherApp` scheme available from [WeatherApp.xcodeproj](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp.xcodeproj)
+- an iPhone simulator or physical iPhone target for running the app
+- location permission enabled so the app can request the current forecast for the user's location
+
 ## Third-Party Dependencies
 
 No third-party dependencies are currently used.
 
 - OpenWeather is used as an external HTTP API, not as a bundled SDK.
 - If cross-cutting tooling is added later, it must stay limited to concerns such as linting, logging, or CI support.
+
+## API Security Considerations
+
+For a production API setup, the app should be backed by additional security controls rather than relying only on a client-side request flow.
+
+Recommended measures include:
+
+- rate limiting to reduce abuse and protect the weather service integration
+- server-side API key protection instead of exposing sensitive keys in client builds
+- request validation and monitoring for suspicious traffic patterns
+- logging and alerting around failed or excessive API usage
 
 ## Weather Presentation Mapping
 
@@ -151,6 +171,21 @@ The project now separates:
 - **weather icon asset for condition display**
 
 This keeps the background logic stable and easy to reason about, while allowing the forecast rows and current-condition UI to become much more specific without changing the rest of the app's visual architecture.
+
+### How Daily Forecast Icons Are Chosen
+
+The daily forecast cards do not render every hourly condition at once. Each day is reduced to a single representative icon for that day's summary card.
+
+In the current implementation:
+
+- hourly forecast entries keep their own specific icon values
+- the daily list chooses one representative entry for the day
+- the detail screen can still show time-based hourly icons for the selected day
+
+This means the main daily card and the hourly breakdown serve different purposes:
+
+- the daily card gives one summarized weather icon for the day
+- the detail screen gives more time-specific icon detail
 
 ## Temperature Unit Behavior
 
@@ -276,6 +311,23 @@ That interaction pushes a detail screen that shows:
 - hourly forecast entries with time-based weather icons
 - additional upcoming daily forecast cards based on the available API data
 
+## Preview Data Vs Live Data
+
+The codebase includes SwiftUI preview data for design-time rendering, but the running app uses live forecast data from OpenWeather through the weather service layer.
+
+That means:
+
+- previews may show fixed sample conditions for layout purposes
+- the simulator or device app uses the actual API response when loading forecast data
+- differences between preview visuals and live forecast output are expected if the sample data does not match the current weather
+
+## Known Limitations
+
+- the app currently uses OpenWeather's 5-day / 3-hour forecast endpoint, so it does not provide a true 14-day forecast
+- the API key is still client-side for testing and should be protected behind a server in production
+- the app currently depends on location access and does not yet provide a manual city search fallback
+- the daily forecast list uses one representative icon per day rather than showing multiple conditions in the same row
+
 ## Configuration
 
 The current testing configuration is defined in [AppConfiguration.swift](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/App/AppConfiguration.swift).
@@ -291,6 +343,49 @@ The OpenWeather key is currently stored on the client for testing.
 3. Edit [AppConfiguration.swift](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/App/AppConfiguration.swift) with your testing values.
 4. Run on an iPhone simulator or device with location permissions enabled.
 
+## CLI Test Run
+
+The project was also verified from the command line with `xcodebuild` using this command:
+
+```bash
+xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+```
+
+What this command does:
+
+- builds the `WeatherApp` app target
+- builds the `WeatherAppTests` test target
+- launches the test run on the `iPhone 17 Pro` iOS Simulator destination
+- executes the unit test suite from the terminal instead of Xcode's UI
+
+Observed result from this run:
+
+- `** TEST SUCCEEDED **`
+- 29 tests executed
+- 0 failures
+- 0 unexpected failures
+
+This was the last recorded test run: `Friday 03 April 01:28`.
+
+Current status from that run:
+
+- everything appears to be running smoothly
+- all tests pass
+- CI/CD is in a good state
+- the app compiles successfully
+- no errors or bugs were reported in that run
+
+The run included successful execution of:
+
+- `ForecastPresentationFormatterTests`
+- `ForecastScreenViewModelTests`
+- `OpenWeatherConditionIconMapperTests`
+- `OpenWeatherForecastMapperTests`
+- `TemperatureUnitPreferenceTests`
+- `WeatherThemeTests`
+
+The generated test session results and logs were written under Xcode DerivedData in an `.xcresult` bundle.
+
 CLI examples:
 
 ```bash
@@ -305,6 +400,14 @@ The most recent local terminal run on April 2, 2026 used:
 ```bash
 xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
+
+## Future Improvements
+
+- add an in-app temperature unit preference instead of relying only on the system setting
+- move weather API access behind a backend or proxy for stronger key protection and rate limiting
+- add caching or offline support for previously loaded forecast data
+- support manual location or city search alongside GPS-based lookup
+- expand the forecast range if a longer-range weather data source is introduced
 
 Result:
 
