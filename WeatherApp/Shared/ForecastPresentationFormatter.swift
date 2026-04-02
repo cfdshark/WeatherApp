@@ -104,6 +104,6 @@ enum ForecastPresentationFormatter {
         let low = unitPreference.displayValue(forCelsius: lowCelsius)
         let high = unitPreference.displayValue(forCelsius: highCelsius)
         let suffix = unitPreference.unitSuffix
-        return "\(low)~\(high)\(suffix)"
+        return "\(low)\(suffix)/\(high)\(suffix)"
     }
 }

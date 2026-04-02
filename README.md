@@ -90,6 +90,17 @@ In addition to the coarse background category, the app now keeps the primary Ope
 - `weather.main`
 - `weather.description`
 
+The weather condition codes used by the app come directly from OpenWeather's response payload, not from a custom app-defined code table. That means codes such as `800`, `801`, `500`, and `503` are read from `weather.id` in the API response and then mapped to bundled weather icons in code.
+
+The source-of-truth flow is:
+
+- [OpenWeatherService.swift](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/Services/Weather/OpenWeatherService.swift) fetches the forecast from OpenWeather
+- [OpenWeatherResponse.swift](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/Services/Weather/OpenWeatherResponse.swift) decodes `weather.id`
+- [OpenWeatherConditionIconMapper.swift](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/Services/Weather/OpenWeatherConditionIconMapper.swift) maps those codes to `WeatherIconAsset`
+- [WeatherIconAsset.swift](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/Domain/Models/WeatherIconAsset.swift) links the mapped case to the actual bundled image asset name
+
+The asset catalog itself does not store weather condition codes. The images live in [Weather Icons](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/Assets.xcassets/WeatherAssets/Weather%20Icons), while the weather-code-to-icon association lives entirely in Swift code.
+
 The icon pipeline uses `weather.id` as the primary lookup key because it is the most stable field for condition matching. That ID is mapped to the provided bundled weather icon assets instead of relying only on SF Symbols.
 
 The bundled icon set is treated as the app's primary weather icon library. OpenWeather conditions are mapped into the closest available asset in that set. For example:
@@ -148,6 +159,26 @@ This applies consistently to:
 
 - the current temperature in the forecast header
 - each daily temperature shown in the forecast list
+- each daily low/high pair shown in formats like `12°C/15°C`
+
+### Daily Low / High Temperature Display
+
+When the UI shows a pair such as `12°C/15°C`, that means:
+
+- `12°C` = the day's low temperature
+- `15°C` = the day's high temperature
+
+Those values are derived from OpenWeather's forecast entries for that day and are stored in the app's domain model as:
+
+- `minTemperatureCelsius`
+- `maxTemperatureCelsius`
+
+The mapping is assembled in [OpenWeatherForecastMapper.swift](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/Services/Weather/OpenWeatherForecastMapper.swift), which groups forecast entries by day and computes:
+
+- the minimum value from `temp_min` for the daily low
+- the maximum value from `temp_max` for the daily high
+
+That daily low/high pair is then formatted for presentation in the forecast list and detail screen.
 
 ### Current Limitation
 
@@ -227,6 +258,17 @@ The current metrics row is intentionally lightweight:
 - precipitation is currently shown as chance-of-precipitation only
 
 This is a good lightweight summary for the current header, but a production-grade weather app would likely expand this into a dedicated details surface or conditions panel.
+
+## Forecast Card Interaction
+
+Users can open a more detailed forecast view by double-tapping any daily weather card in the forecast list.
+
+That interaction pushes a detail screen that shows:
+
+- the selected day's main weather summary
+- supporting weather metrics such as feels-like temperature, wind, humidity, and chance of rain
+- hourly forecast entries with time-based weather icons
+- additional upcoming daily forecast cards based on the available API data
 
 ## Configuration
 
