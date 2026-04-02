@@ -56,16 +56,6 @@ No third-party dependencies are currently used.
 - OpenWeather is used as an external HTTP API, not as a bundled SDK.
 - If cross-cutting tooling is added later, it must stay limited to concerns such as linting, logging, or CI support.
 
-## API Security Considerations
-
-For a production API setup, the app should be backed by additional security controls rather than relying only on a client-side request flow.
-
-Recommended measures include:
-
-- rate limiting to reduce abuse and protect the weather service integration
-- server-side API key protection instead of exposing sensitive keys in client builds
-- request validation and monitoring for suspicious traffic patterns
-- logging and alerting around failed or excessive API usage
 
 ## Weather Presentation Mapping
 
@@ -479,3 +469,10 @@ If GitHub Actions shows JavaScript runtime warnings such as Node 20 deprecation 
 ## Security Consideration
 
 The API key is stored on the client side, which is unsecure, and any bad actors can unbundle the app and gain access to the API key. This is only for testing purposes. If the app was to be mass distributed, the API key would be moved to Firebase Secrets Manager.
+
+Recommended measures include:
+
+- rate limiting to reduce abuse and protect the weather service integration
+- server-side API key protection instead of exposing sensitive keys in client builds
+- request validation and monitoring for suspicious traffic patterns
+- logging and alerting around failed or excessive API usage
