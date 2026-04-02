@@ -23,7 +23,7 @@ jobs:
           xcodebuild test \
             -project WeatherApp.xcodeproj \
             -scheme WeatherApp \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
             -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult
 
@@ -32,7 +32,7 @@ jobs:
           xcodebuild analyze \
             -project WeatherApp.xcodeproj \
             -scheme WeatherApp \
-            -destination 'platform=iOS Simulator,name=iPhone 16'
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 
       - name: Export coverage report
         run: |

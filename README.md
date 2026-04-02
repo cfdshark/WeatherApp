@@ -241,8 +241,8 @@ The OpenWeather key is currently stored on the client for testing.
 CLI examples:
 
 ```bash
-xcodebuild build -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'platform=iOS Simulator,name=iPhone 16'
-xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'platform=iOS Simulator,name=iPhone 16'
+xcodebuild build -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
 
 ## Testing Strategy
@@ -265,7 +265,7 @@ The workflow currently runs a single job named `test-and-analyze` on `macos-late
 
 - checks out the repository with `actions/checkout`
 - selects the latest stable Xcode with `maxim-lobanov/setup-xcode`
-- runs `xcodebuild test` against the `WeatherApp` scheme on the `iPhone 16` simulator
+- runs `xcodebuild test` against the `WeatherApp` scheme on the `iPhone 17 Pro` simulator
 - enables code coverage during test execution
 - writes the test result bundle to `TestResults.xcresult`
 - runs `xcodebuild analyze` for static analysis after tests
