@@ -1,6 +1,7 @@
 import XCTest
 @testable import WeatherApp
 
+@MainActor
 final class TemperatureUnitPreferenceTests: XCTestCase {
     func testInitUsesFahrenheitLocalePreference() {
         XCTAssertEqual(

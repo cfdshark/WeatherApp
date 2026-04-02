@@ -245,6 +245,36 @@ xcodebuild build -project WeatherApp.xcodeproj -scheme WeatherApp -destination '
 xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
 
+## Latest Local Verification
+
+The most recent local terminal run on April 2, 2026 used:
+
+```bash
+xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+```
+
+Result:
+
+- `** TEST SUCCEEDED **`
+- 25 unit tests executed
+- 0 failures
+- 0 unexpected failures
+- test execution time: `0.122` seconds
+- full test session elapsed time reported by Xcode: `37.088` seconds
+
+Test suites covered in that run:
+
+- `ForecastPresentationFormatterTests` - 4 passing tests
+- `ForecastScreenViewModelTests` - 4 passing tests
+- `OpenWeatherConditionIconMapperTests` - 11 passing tests
+- `OpenWeatherForecastMapperTests` - 1 passing test
+- `TemperatureUnitPreferenceTests` - 4 passing tests
+- `WeatherThemeTests` - 1 passing test
+
+Artifacts produced by the run:
+
+- Xcode result bundle: `/Users/blessingmabunda/Library/Developer/Xcode/DerivedData/WeatherApp-dtyvrnwyjmpdyrbwuefjuzntmtgl/Logs/Test/Test-WeatherApp-2026.04.02_08-42-15-+0200.xcresult`
+
 ## Testing Strategy
 
 - Unit tests cover:
