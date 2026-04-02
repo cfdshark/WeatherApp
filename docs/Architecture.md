@@ -76,9 +76,9 @@ This keeps layout, styling, and state-driven branching out of a single oversized
 6. The view model publishes the final `ForecastScreenState.loaded` state.
 7. SwiftUI views render the weather background, header, and forecast list from display-ready domain data.
 
-## Why This Avoids A Monolith
+## This approach avoids a monolith approach
 
-The original template placed everything in a single `ContentView`. That approach does not scale once location handling, networking, API mapping, retry logic, and multiple view states appear. This implementation avoids that by:
+That approach does not scale once location handling, networking, API mapping, retry logic, and multiple view states appear. This implementation avoids that by:
 
 - isolating async flow in one view model
 - keeping each UI section in its own small view
@@ -88,7 +88,3 @@ The original template placed everything in a single `ContentView`. That approach
 ## Extension Points
 
 This structure leaves clear room for future work without rewriting the screen:
-
-- add hourly forecast or detail screens under `Features/`
-- add caching or offline storage behind `WeatherProviding`
-- add new presentation themes without touching service code
