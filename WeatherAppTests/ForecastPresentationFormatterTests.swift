@@ -2,8 +2,34 @@ import XCTest
 @testable import WeatherApp
 
 final class ForecastPresentationFormatterTests: XCTestCase {
-    func testTemperatureStringUsesDegreeSuffix() {
-        XCTAssertEqual(ForecastPresentationFormatter.temperatureString(celsius: 24), "24°")
+    func testTemperatureStringUsesCelsiusWhenPreferred() {
+        XCTAssertEqual(
+            ForecastPresentationFormatter.temperatureString(
+                celsius: 24,
+                unitPreference: .celsius
+            ),
+            "24°C"
+        )
+    }
+
+    func testTemperatureStringConvertsToFahrenheitWhenPreferred() {
+        XCTAssertEqual(
+            ForecastPresentationFormatter.temperatureString(
+                celsius: 24,
+                unitPreference: .fahrenheit
+            ),
+            "75°F"
+        )
+    }
+
+    func testTemperatureStringConvertsNegativeValuesToFahrenheit() {
+        XCTAssertEqual(
+            ForecastPresentationFormatter.temperatureString(
+                celsius: -10,
+                unitPreference: .fahrenheit
+            ),
+            "14°F"
+        )
     }
 
     func testWeekdayStringReturnsWeekdayName() {

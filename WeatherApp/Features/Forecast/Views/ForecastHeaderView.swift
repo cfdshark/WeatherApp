@@ -20,7 +20,11 @@ struct ForecastHeaderView: View {
                 HStack(alignment: .center, spacing: 16) {
                     headerIcon
 
-                    Text("\(snapshot.currentTemperatureCelsius)°")
+                    Text(
+                        ForecastPresentationFormatter.temperatureString(
+                            celsius: snapshot.currentTemperatureCelsius
+                        )
+                    )
                         .font(.system(size: 52, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
                 }

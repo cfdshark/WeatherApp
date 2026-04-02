@@ -130,6 +130,49 @@ The project now separates:
 
 This keeps the background logic stable and easy to reason about, while allowing the forecast rows and current-condition UI to become much more specific without changing the rest of the app's visual architecture.
 
+## Temperature Unit Behavior
+
+The app currently fetches temperatures from OpenWeather in **metric** units and keeps those values in Celsius inside the app's domain models.
+
+Temperature conversion happens only at presentation time:
+
+- if the phone's system temperature preference resolves to Celsius, the app displays `°C`
+- if the phone's system temperature preference resolves to Fahrenheit, the app converts the stored Celsius value and displays `°F`
+
+This applies consistently to:
+
+- the current temperature in the forecast header
+- each daily temperature shown in the forecast list
+
+### Current Limitation
+
+This is intentionally limited.
+
+Right now the app does **not** offer an in-app temperature preference. It only follows the phone's current system preference for temperature units. That is acceptable for a lightweight prototype, but it is not ideal for a production weather app because users may want control that differs from their device-wide regional setting.
+
+Examples:
+
+- a user may want Fahrenheit in the weather app even if their phone is configured for a metric region
+- a user may want Celsius in the app while traveling in a locale that defaults to Fahrenheit
+
+### Production Direction
+
+For a production-ready version, the app should add a dedicated settings surface where the user can explicitly choose their preferred temperature unit.
+
+That future settings flow should support:
+
+- `Use System Setting`
+- `Celsius`
+- `Fahrenheit`
+
+In that model:
+
+- the app would still be able to respect the phone setting by default
+- the user would be able to override that default when needed
+- the chosen preference would be persisted and used consistently across the entire app
+
+The current implementation does not include that settings page or persistence layer yet. It is a presentation-only improvement that makes the displayed unit match the phone setting without introducing additional app configuration UI.
+
 ## Configuration
 
 The current testing configuration is defined in [AppConfiguration.swift](/Users/blessingmabunda/Documents/WeatherApp/WeatherApp/App/AppConfiguration.swift).
@@ -159,7 +202,7 @@ xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'p
   - OpenWeather condition-to-icon mapping for bundled weather assets
   - theme/background mapping
   - forecast view-model state transitions
-  - presentation formatting helpers
+  - presentation formatting helpers, including Celsius/Fahrenheit display conversion
 - Protocol-based test doubles isolate location, network, and weather flows.
 - UI verification is handled through SwiftUI previews plus view-model coverage rather than snapshot tooling.
 

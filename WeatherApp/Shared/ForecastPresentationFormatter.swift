@@ -13,7 +13,11 @@ enum ForecastPresentationFormatter {
         return formatter.string(from: date)
     }
 
-    static func temperatureString(celsius: Int) -> String {
-        "\(celsius)°"
+    static func temperatureString(
+        celsius: Int,
+        unitPreference: TemperatureUnitPreference = TemperatureUnitPreference()
+    ) -> String {
+        let displayValue = unitPreference.displayValue(forCelsius: celsius)
+        return "\(displayValue)\(unitPreference.unitSuffix)"
     }
 }
