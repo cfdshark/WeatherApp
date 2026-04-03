@@ -444,7 +444,7 @@ The workflow currently runs a single job named `test-and-analyze` on `macos-late
 - enables code coverage during test execution
 - writes the test result bundle to `TestResults.xcresult`
 - runs `xcodebuild analyze` for static analysis after tests
-- exports a human-readable coverage report with `xcrun xccov view --report`
+- exports a coverage report with `xcrun xccov view --report`
 - uploads the generated `coverage.txt` file as a GitHub Actions artifact named `weatherapp-coverage`
 
 In practical terms, CI is enforcing three things on every push and pull request:
@@ -453,11 +453,11 @@ In practical terms, CI is enforcing three things on every push and pull request:
 - the unit tests must pass on the configured simulator destination
 - Xcode static analysis must complete without failing the workflow
 
-The artifact handling is intentionally simple. Coverage is not yet posted as a PR comment, uploaded to a third-party dashboard, or used as a merge gate. Instead, the workflow keeps the `coverage.txt` file as a downloadable build artifact for manual inspection from the Actions run page.
+The artifact handling is intentionally simple. Coverage is not yet posted as a PR comment. Instead, the workflow keeps the `coverage.txt` file as a downloadable build artifact for manual inspection from the Actions run page.
 
 There is no CD step yet. The repository does not currently build release archives, sign the app, upload to TestFlight, deploy metadata, or publish artifacts beyond the test coverage report. If release automation is added later, it should be kept separate from the validation job so CI failures and release failures remain easy to distinguish.
 
-If GitHub Actions shows JavaScript runtime warnings such as Node 20 deprecation notices, those warnings are about the GitHub-hosted action runtime used by actions like `actions/checkout`, not about the Swift app itself. They should be handled by updating workflow action versions when newer compatible releases are available.
+GitHub Actions currently shows JavaScript runtime warnings such as Node 20 deprecation notices, those warnings are about the GitHub-hosted action runtime used by actions like `actions/checkout`, not about the Swift app itself. They should be handled by updating workflow action versions when newer compatible releases are available.
 
 ## Static Analysis
 
