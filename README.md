@@ -350,7 +350,7 @@ What this command does:
 
 Observed result from this run:
 
-- `** TEST SUCCEEDED **`
+- ` TEST SUCCEEDED `
 - 29 tests executed
 - 0 failures
 - 0 unexpected failures
@@ -385,7 +385,7 @@ xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'p
 
 ## Latest Local Verification
 
-The most recent local terminal run on April 2, 2026 used:
+CLI run on April 2, 2026 used:
 
 ```bash
 xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
@@ -394,14 +394,13 @@ xcodebuild test -project WeatherApp.xcodeproj -scheme WeatherApp -destination 'p
 ## Future Improvements
 
 - add an in-app temperature unit preference instead of relying only on the system setting
-- move weather API access behind a backend or proxy for stronger key protection and rate limiting
 - add caching or offline support for previously loaded forecast data
 - support manual location or city search alongside GPS-based lookup
 - expand the forecast range if a longer-range weather data source is introduced
 
 Result:
 
-- `** TEST SUCCEEDED **`
+- ` TEST SUCCEEDED `
 - 25 unit tests executed
 - 0 failures
 - 0 unexpected failures
